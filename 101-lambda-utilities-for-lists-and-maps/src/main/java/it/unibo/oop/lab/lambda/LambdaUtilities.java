@@ -60,10 +60,10 @@ public final class LambdaUtilities {
      *         otherwise.
      */
     public static <T> List<Optional<T>> optFilter(final List<T> list, final Predicate<T> pre) {
-        List<Optional<T>> listWithOptFilter = new LinkedList<>();
+        final List<Optional<T>> listWithOptFilter = new LinkedList<>();
 
-        for(T elem : list) {
-            Optional <T> opt = Optional.ofNullable(elem);
+        for (final T elem : list) {
+            final Optional<T> opt = Optional.ofNullable(elem);
             listWithOptFilter.add(opt.filter(pre));
         }
         return listWithOptFilter;
@@ -82,10 +82,11 @@ public final class LambdaUtilities {
      *         based on the mapping done by the function
      */
     public static <R, T> Map<R, Set<T>> group(final List<T> list, final Function<T, R> op) {
-        Map<R, Set<T>> map = new HashMap<R,Set<T>>();
-         
-        for(T elem : list) {
-            map.merge(op.apply(elem), new HashSet<>(Set.of(elem)), (oldSet, newSet) -> {oldSet.addAll(newSet); return oldSet;});
+        final Map<R, Set<T>> map = new HashMap<>();
+        for (final T elem : list) {
+            map.merge(op.apply(elem), new HashSet<>(Set.of(elem)), (oldSet, newSet) -> {
+                oldSet.addAll(newSet); return oldSet;
+            });
         }
         return map;
     }
@@ -103,9 +104,11 @@ public final class LambdaUtilities {
      *         by the supplier
      */
     public static <K, V> Map<K, V> fill(final Map<K, Optional<V>> map, final Supplier<V> def) {
-        Map<K, V> mapToBeFilled = new HashMap<>();
+        final Map<K, V> mapToBeFilled = new HashMap<>();
 
-        map.forEach((key, value) -> {mapToBeFilled.put(key, value.orElseGet(def));});
+        map.forEach((key, value) -> {
+            mapToBeFilled.put(key, value.orElseGet(def));
+        });
         return mapToBeFilled;
     }
 
@@ -115,7 +118,7 @@ public final class LambdaUtilities {
      */
     @SuppressWarnings("PMD.SystemPrintln")
     public static void main(final String[] args) {
-        final List<Integer> li = IntStream.range(1, 8).mapToObj(i -> Integer.valueOf(i)).collect(Collectors.toList());
+        final List<Integer> li = IntStream.range(1, 8).mapToObj(Integer::valueOf).collect(Collectors.toList());
         System.out.println(dup(li, x -> x + 100));
         /*
          * [1, 101, 2, 102, 3, 103, 4, 104, 5, 105, 6, 106, 7, 107]
