@@ -82,10 +82,12 @@ public final class LambdaUtilities {
      *         based on the mapping done by the function
      */
     public static <R, T> Map<R, Set<T>> group(final List<T> list, final Function<T, R> op) {
-        /*
-         * Suggestion: consider Map.merge
-         */
-        return null;
+        
+        Map<R, Set<T>> map = new HashMap<R,Set<T>>(); 
+        for(T elem : list) {
+            map.merge(op.apply(elem), new HashSet<>(Set.of(elem)), (oldSet, newSet) -> {oldSet.addAll(newSet); return oldSet;});
+        }
+        return map;
     }
 
     /**
