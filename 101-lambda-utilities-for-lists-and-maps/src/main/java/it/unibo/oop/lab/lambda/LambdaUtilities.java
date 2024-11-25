@@ -2,6 +2,8 @@ package it.unibo.oop.lab.lambda;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -58,10 +60,13 @@ public final class LambdaUtilities {
      *         otherwise.
      */
     public static <T> List<Optional<T>> optFilter(final List<T> list, final Predicate<T> pre) {
-        /*
-         * Suggestion: consider Optional.filter
-         */
-        return null;
+        List<Optional<T>> listWithOptFilter = new LinkedList<>();
+
+        for(T elem : list) {
+            Optional <T> opt = Optional.ofNullable(elem);
+            listWithOptFilter.add(opt.filter(pre));
+        }
+        return listWithOptFilter;
     }
 
     /**
