@@ -85,7 +85,8 @@ public final class LambdaUtilities {
         final Map<R, Set<T>> map = new HashMap<>();
         for (final T elem : list) {
             map.merge(op.apply(elem), new HashSet<>(Set.of(elem)), (oldSet, newSet) -> {
-                oldSet.addAll(newSet); return oldSet;
+                oldSet.addAll(newSet);
+                return oldSet;
             });
         }
         return map;
@@ -107,7 +108,7 @@ public final class LambdaUtilities {
         final Map<K, V> mapToBeFilled = new HashMap<>();
 
         map.forEach((key, value) -> {
-            mapToBeFilled.put(key, value.orElseGet(def));
+            mapToBeFilled.put(key, value.orElse(def.get()));
         });
         return mapToBeFilled;
     }
