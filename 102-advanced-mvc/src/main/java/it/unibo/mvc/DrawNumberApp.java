@@ -1,8 +1,15 @@
 package it.unibo.mvc;
 
+import java.io.BufferedReader;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.List;
+import java.util.StringTokenizer;
+
+import javax.swing.JOptionPane;
 
 /**
  */
@@ -19,6 +26,9 @@ public final class DrawNumberApp implements DrawNumberViewObserver {
      *            the views to attach
      */
     public DrawNumberApp(final DrawNumberView... views) {
+        int min = MIN;
+        int max = MAX;
+        int attempts = ATTEMPTS;
         /*
          * Side-effect proof
          */
@@ -27,7 +37,38 @@ public final class DrawNumberApp implements DrawNumberViewObserver {
             view.setObserver(this);
             view.start();
         }
-        this.model = new DrawNumberImpl(MIN, MAX, ATTEMPTS);
+        InputStream inputStream = getClass().getClassLoader().getResourceAsStream("config.yml");
+        if(inputStream == null) {
+            JOptionPane.showMessageDialog(null, "File not founded");
+        }
+        try(BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream))) {
+            String line = null;
+            while((line = bufferedReader.readLine()) != null) {
+                line = line.trim();
+                StringTokenizer stringTokenizer = new StringTokenizer(line, ": ");
+                if(stringTokenizer.countTokens() == 2) {
+                    String string1 = stringTokenizer.nextToken().trim();
+                    String string2 = stringTokenizer.nextToken().trim();
+                    switch (string1) {
+                        case "minimum":
+                            min = Integer.parseInt(string2);
+                            break;
+                        case "maximum":
+                            max = Integer.parseInt(string2);
+                            break;
+                        case "attempts":
+                            attempts = Integer.parseInt(string2);
+                            break;
+                        default:
+                            JOptionPane.showMessageDialog(null, "In file config.yml is not found a sensed line");
+                            break;
+                    }
+                }
+            }
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(null, "Error to open bufferedReader" + e.getMessage());
+        }
+        this.model = new DrawNumberImpl(min, max, attempts);
     }
 
     @Override
